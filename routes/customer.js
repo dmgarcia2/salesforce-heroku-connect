@@ -7,6 +7,8 @@ var main = require('../modules/main');
 
 var logger = main.getLogger();
 
+var dbSchema = process.env.DATABASE_SCHEMA;
+
 /* GET home page. */
 router.get('/view', function(req, res, next) {
   res.render('customer');
@@ -23,7 +25,7 @@ router.get('/', function(req, res, next) {
 		var filter = req.query.search.value;
 		var filterSql = ''; 
 
-		var templateSql = 'SELECT COUNT(1) AS totalRows FROM public."account"';
+		var templateSql = 'SELECT COUNT(1) AS totalRows FROM ' + dbSchema + '."account"';
 
 		res.setHeader('Content-Type','application/json');
 		waterfall([
@@ -65,7 +67,7 @@ router.get('/', function(req, res, next) {
 			function(totalRows, totalRowsFiltered, callback) {
 				var sql =
 					'SELECT "id", "name", "email_address__c", "phone", "mobile_number__c", "guid__c" ' +
-					'FROM public."account" ' + filterSql + ' ORDER BY "' + orderBy + '" ' + direction + ' LIMIT $1 OFFSET $2';
+					'FROM ' + dbSchema + '."account" ' + filterSql + ' ORDER BY "' + orderBy + '" ' + direction + ' LIMIT $1 OFFSET $2';
 				var data = [limit, offset];
 
 				main.runQuery(sql, data, function(results) {
@@ -103,7 +105,7 @@ router.put('/:id', function(req, res) {
 		var guid__c = req.body.guid__c;
 		
 		var sql =
-			'UPDATE public."account" ' +
+			'UPDATE ' + dbSchema + '."account" ' +
 			'SET "name"=$1, "email_address__c"=$2, "phone"=$3, "mobile_number__c"=$4, "guid__c"=$5 ' +
 			'WHERE "id"=($6)';
 		var data = [name, email_address__c, phone, mobile_number__c, guid__c, id];
