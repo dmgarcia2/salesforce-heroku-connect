@@ -1,0 +1,72 @@
+<div id="streamObject">
+	<h1>Stream Object</h1>
+	<hr />
+	<form>
+	<div class="row">
+		<div id="streamObjectTree" class="col-md-4">
+			<div class="row">
+				<div class="col-md-12">
+					<div id="streamObjectContainer" class="input-group">
+						<select id="applications" class="form-control selectpicker show-tick" multiple 
+							data-live-search="true" title="Choose application to filter..."
+							data-selected-text-format="count" data-width="98%" data-size="10"
+							data-actions-box="true">
+						</select>
+						<span class="input-group-btn">
+							<button id="filterAppButton" type="button" class="btn btn-info pull-right" disabled="disabled">Filter</button>
+						</span>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div class="has-info has-feedback">
+								<label class="control-streamObject sr-only" for="searchFilter">Search</label>
+								<input type="text" class="form-control" id="searchFilter" aria-describedby="inputSearchStatus" placeholder="Search">
+								<span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+								<span id="inputSearchStatus" class="sr-only">(search)</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<div class="panel-body">
+							<div id="streamObjectTreeContainer" class="col-md-12">
+								<div id="tree"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="streamObjectData" class="col-md-8">
+			<div id="streamObjectFormLoading" class="loadingForm"></div>
+			<div id="streamObjectFormContainer" class="hidden">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div id="formPanelContainer" class="panel-body">
+								<form data-toggle="validator" id="streamObjectInfo">
+									<h2 id="streamObjectTitle"></h2>
+									<hr>
+									<div class="form-group required" style="min-height: 300px;">
+										<label>Value:</label>
+										<textarea wrap="hard" class="form-control" id="streamObjectValue" maxlength="1000" rows="3" required></textarea>
+										<div class="help-block with-errors"></div>
+									</div>
+									<div class="pull-right">
+										<button class="btn btn-danger" type="button" id="cancel">Cancel</button>
+										<button class="btn btn-success" type="button" id="update">Update</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+<script type="text/javascript" src="/js/streamObject.js"></script>
