@@ -19,7 +19,9 @@ var main = require('./modules/main');
 
 var logger = main.getLogger();
 
-var index = require('./routes/index');
+var indexRouter = require('./routes/index');
+var customerRouter = require('./routes/customer');
+var streamObjectRouter = require('./routes/streamObject');
 
 if (process.env.POSTGRES_SSL === 'true') {
 	pg.defaults.ssl = true;
@@ -41,7 +43,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+app.use('/', indexRouter);
+app.use('/customer', customerRouter);
+app.use('/streamObject', streamObjectRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
