@@ -1,5 +1,67 @@
-<div id="home" class="container-fluid">
-	<h1>Salesforce Heroku Connect PoC</h1>
-	<hr />
+<h1>Customers</h1>
+<hr />
+<div class="row">
+	<div class="col-md-12">
+		<table id="customers" class="table table-hover table-striped table-bordered display responsive nowrap" cellspacing="0"
+			width="100%">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th>Phone</th>
+					<th>Mobile</th>
+					<th>External Id</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<br />
+<div class="row">
+	<div class="col-md-2 col-md-offset-11">
+		<p>
+			<a href="/">Go Home</a>
+		</p>
+	</div>
+</div>
+
+<!-- Modal edit App -->
+<div class="modal fade" id="editCustomer" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit customer</h4>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" id="updateCustomerForm">
+					<div class="form-group">
+						<input type="hidden" class="form-control" id="idCustomer" value="" name="idCustomer">
+					</div>
+					<div class="form-group required">
+						<label class="control-label">Name</label> <input type="text" class="form-control" id="customerName" value="" name="customerName" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Email</label> <input type="email" class="form-control" id="customerEmail" value="" name="customerEmail"
+							required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Phone</label> <input type="tel" class="form-control" id="customerPhone" value="" name="customerPhone">
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Mobile</label> <input type="tel" class="form-control" id="customerMobile" value="" name="customerMobile" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<input type="hidden" class="form-control" id="customerGuid" value="">
+					<button type="button" class="btn btn-primary" id="edit">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
 <script type="text/javascript" src="/js/customer.js"></script>
