@@ -7,7 +7,7 @@ var main = require('../modules/main');
 
 var logger = main.getLogger();
 
-var dbSchema = process.env.DATABASE_SCHEMA;
+var dbSchema = process.env.DATABASE_SCHEMA || 'public';
 
 /* GET home page. */
 router.get('/view', function(req, res, next) {
