@@ -1,96 +1,212 @@
 var express = require('express');
+var router = express.Router();
 var waterfall = require("async/waterfall");
+var uniqid = require('uniqid');
+var uuidv4 = require('uuid/v4');
 
-var constants = require('../lib/constants');
-var main = require('../lib/main');
+var constants = require('../modules/constants');
+var main = require('../modules/main');
 
-var salesforce = require('../lib/salesforce');
-var sfdcLabels = require('../lib/sfdc-labels');
-var application = require('../lib/application');
-
-var statusServer = require('../statusServer');
 var logger = main.getLogger();
 
-var router = express.Router();
+var dbSchema = process.env.DATABASE_SCHEMA || 'public';
 
-router.get('/', function(req, res, next) {
+router.get('/view', function(req, res) {
 	try {
-		waterfall([
-			// connect to salesforce
-			function(callback) {
-				var credentials = {
-					clientId: process.env.CONSUMER_KEY,
-					clientSecret: process.env.CONSUMER_SECRET,
-					username: process.env.CONSUMER_USERNAME,
-					password: process.env.CONSUMER_PASSWORD,
-					appCallback: process.env.APP_CALLBACK
-				};
-				salesforce.authenticate(credentials, function(org) {
-					callback(null, org);
-				}, function(error) {
-					callback(error);
-				});
-			},
-			// get Custom Labels
-			function(org, callback) {
-				sfdcLabels.getCustomLabels(org, function(labels) {
-					callback(null, org, labels);
-				}, function(error, sql, data) {
-					callback(error);
-				});
-			},
-			// disconnect from SalesForce
-			function(org, labels, callback) {
-				salesforce.disconnect(org, function() {
-					callback(null, labels);
-				});
-			},
-			// get applications
-			function(labels, callback) {
-				application.getApplications(function(applications) {
-					callback(null, {
-						applications: applications,
-						labels: labels
-					});
-				}, function(error) {
-					callback(error, null);
-				});
-			}
-		], function(error, result) {
-			if (error) {
-				logger.error('  - Cannot show labels page: ' + error, error);
-				res.status(500).send({
-					error: error
-				});
-
-				return;
-			}
-
-			var labels = {};
-			for (var index = 0; index < result.labels.length; index++) {
-				var sobject = result.labels[index];
-				var capitalLetter = ('' + sobject.fullName[0]).toUpperCase();
-
-				var group = null;
-				if (capitalLetter in labels) {
-					group = labels[capitalLetter];
-				} else {
-					group = [];
-					labels[capitalLetter] = group;
-				}
-
-				group.push(sobject);
-			}
-			res.status(200).send({
-				applications: result.applications,
-				labels: labels
-			});
-		});
-
+		res.render('streamObject');
 	} catch (exception) {
-		logger.error('  - Unhandled exception catched', { 'exception': exception });
+		logger.error('  - Unhandled exception catched', exception);
 		res.status(500).send({
 			error: exception
 		});
 	}
 });
+router.get('/', function(req, res) {
+	try {
+		var columnNames = ["id", "systemmodstamp", "name", "createddate","isdeleted","body__c","external_guid__c"];
+		var orderBy = columnNames[req.query.order[0].column];
+		var direction = req.query.order[0].dir.toUpperCase();
+		var limit = req.query.length;
+		var offset = req.query.start;
+		var filter = req.query.search.value;
+		var filterSql = ''; 
+
+		var templateSql = 'SELECT COUNT(1) AS totalRows FROM ' + dbSchema + '."heroku_poc__c"';
+
+		res.setHeader('Content-Type','application/json');
+		waterfall([
+			// Get number of rows in User agents
+			function(callback) {
+				var sql = templateSql;
+				var data = [];
+				
+				main.runQuery(sql, data, function(results) {
+					var totalRows = results[0].totalrows;
+					callback(null, totalRows);
+				}, function(error, sql, data) {
+					logger.error('  - Cannot get number of rows in heroku_poc__c table: ' + error, error);
+					callback(error);
+				});
+			},
+			// Get rows with search word
+			function(totalRows, callback) {
+				if (filter.length !== 0) {
+					filterSql = ' WHERE (CAST("id" AS TEXT) LIKE \'%' + filter +
+							'%\' OR CAST("systemmodstamp" AS TEXT) LIKE \'%' + filter +
+							'%\' OR CAST("name" AS TEXT) LIKE \'%' + filter +
+							'%\' OR CAST("createddate" AS TEXT) LIKE \'%' + filter + 
+							'%\' OR CAST("isdeleted" AS TEXT) LIKE \'%' + filter +
+							'%\' OR CAST("body__c" AS TEXT) LIKE \'%' + filter +
+							'%\' OR CAST("external_guid__c" AS TEXT) LIKE \'%' + filter +'%\')';
+				}
+
+				var sql = templateSql + filterSql;
+				var data = [];
+				
+				main.runQuery(sql, data, function(results) {
+					var totalRowsFiltered = results[0].totalrows;
+					callback(null, totalRows, totalRowsFiltered);
+				}, function(error, sql, data) {
+					logger.error('  - Cannot get number of rows in heroku_poc__c table (filtered): ' + error, error);
+					callback(error);
+				});
+			},
+			// Get rows for a page
+			function(totalRows, totalRowsFiltered, callback) {
+				var sql =
+					'SELECT "id", "systemmodstamp", "name", "createddate", "isdeleted", "body__c", "external_guid__c" FROM ' + dbSchema + '."heroku_poc__c" ' + filterSql +
+						' ORDER BY "' + orderBy + '" ' + direction + ' LIMIT $1 OFFSET $2';
+				var data = [limit, offset];
+
+				main.runQuery(sql, data, function(results) {
+					var result = {
+						draw: req.query.draw,
+						recordsTotal : totalRows,
+						recordsFiltered : totalRowsFiltered,
+						data : results
+					};
+					callback(null, result);
+				}, function(error, sql, data) {
+					logger.error('  - Cannot get rows in heroku_poc__c table: ' + error, error);
+					callback(error);
+				});
+			}
+			], function(error, result) {
+			if (error) {
+				logger.error('  - Cannot get rows in heroku_poc__c table: ' + error, error);
+				return;
+			}
+			res.send(JSON.stringify(result));
+		});
+
+	} catch (exception) {
+		logger.error('Cannot get rows in heroku_poc__c table: ' + exception, exception);
+	}
+});
+
+router.post('/', function(req, res) {
+	try {
+		var systemmodstamp = '20170920 103243';
+		var name = req.body.name;
+		var createddate = '20170920 103243';
+		var isdeleted = req.body.isdeleted;
+		var body__c = req.body.body__c;
+		
+		var id = uniqid();
+		var guid = uuidv4();
+		
+		console.log("systemmodstamp: "+systemmodstamp);
+		
+		var columns = '"id", "systemmodstamp", "name", "createddate", "isdeleted", "body__c", "external_guid__c"';
+		var values = '$1, to_timestamp($2, \'YYYYMMDD HH24MISS\'), $3, to_timestamp($4, \'YYYYMMDD HH24MISS\'), $5, $6, $7';
+		var data = [id,systemmodstamp, name, createddate, isdeleted, body__c, guid];
+		
+		var sql = 'INSERT INTO ' + dbSchema + '."heroku_poc__c" (' + columns + ') VALUES (' + values + ')';
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- New stream object created -');
+			res.status(200).send({
+				id: id,
+				systemmodstamp: systemmodstamp,
+				name: name,
+				createddate: createddate,
+				isdeleted: isdeleted,
+				body__c: body__c,
+				external_guid__c: guid
+				});
+		}, function(error) {
+			logger.error('- Cannot insert new stream object -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+router.put('/:id', function(req, res) {
+	try {
+		var id = req.body.id;
+		var systemmodstamp = req.body.systemmodstamp;
+		var name = req.body.name;
+		var createddate = req.body.createddate;
+		var isdeleted = req.body.isdeleted;
+		var body__c = req.body.body__c;
+		var external_guid__c = req.body.external_guid__c;
+		
+		var sql =
+			'UPDATE ' + dbSchema + '."heroku_poc__c" ' +
+			'SET "systemmodstamp"=$1, "name"=$2, "createddate"=$3, "isdeleted"=$4, "body__c"=$5, "external_guid__c"=$6 ' +
+			'WHERE "id"=($7)';
+		var data = [systemmodstamp, name, createddate, isdeleted, body__c, external_guid__c, id];
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- Updating heroku_poc__c -');
+			res.status(200).send({
+				id: id,
+				systemmodstamp: systemmodstamp,
+				name: name,
+				createddate: createddate,
+				isdeleted: isdeleted,
+				body__c: body__c,
+				external_guid__c: external_guid__c
+			});
+		}, function(error) {
+			logger.error('- Cannot edit heroku_poc__c "' + id + '" -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+router.delete('/:streamObject_id', function(req, res) {
+	try {
+		var id = req.body.id;
+		var sql = 'DELETE FROM ' + dbSchema + '."heroku_poc__c" WHERE "id"=($1)';
+		var data = [id];
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- Deleting Stream object -');
+			res.status(200).send({ ok : "ok" });
+		}, function(error) {
+			logger.error('- Cannot delete Stream object -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+module.exports = router;

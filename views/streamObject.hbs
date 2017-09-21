@@ -1,72 +1,121 @@
-<div id="streamObject">
-	<h1>Stream Object</h1>
-	<hr />
-	<form>
-	<div class="row">
-		<div id="streamObjectTree" class="col-md-4">
-			<div class="row">
-				<div class="col-md-12">
-					<div id="streamObjectContainer" class="input-group">
-						<select id="applications" class="form-control selectpicker show-tick" multiple 
-							data-live-search="true" title="Choose application to filter..."
-							data-selected-text-format="count" data-width="98%" data-size="10"
-							data-actions-box="true">
-						</select>
-						<span class="input-group-btn">
-							<button id="filterAppButton" type="button" class="btn btn-info pull-right" disabled="disabled">Filter</button>
-						</span>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-body">
-							<div class="has-info has-feedback">
-								<label class="control-streamObject sr-only" for="searchFilter">Search</label>
-								<input type="text" class="form-control" id="searchFilter" aria-describedby="inputSearchStatus" placeholder="Search">
-								<span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
-								<span id="inputSearchStatus" class="sr-only">(search)</span>
-							</div>
-						</div>
-					</div>
+<h1>Stream object</h1>
+<hr />
+<button type="button" class="btn btn-default" aria-label="Left Align" data-toggle="modal" data-target="#newStreamObject" id="createStreamObject">New Stream Object</button>
+<br/><br/>
+<div class="row">
+	<div class="col-md-12">
+		<table id="streamObjects" class="table table-hover table-striped table-bordered display responsive nowrap" cellspacing="0"
+			width="100%">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>System Mod Stamp</th>
+					<th>Name</th>
+					<th>Created date</th>
+					<th>Is deleted</th>
+					<th>Body</th>
+					<th>External Id</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+</div>
+<br />
+<div class="row">
+	<div class="col-md-2 col-md-offset-11">
+		<p>
+			<a href="/">Go Home</a>
+		</p>
+	</div>
+</div>
+
+<!-- Modal new Stream object -->
+	<div class="modal fade" id="newStreamObject" role="dialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">New stream object</h4>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="panel panel-default">
-						<div class="panel-body">
-							<div id="streamObjectTreeContainer" class="col-md-12">
-								<div id="tree"></div>
-							</div>
+				<div class="modal-body">
+					<form data-toggle="validator" id="newStreamObjectForm">
+						<div class="form-group required">
+							<label class="control-label">name</label> <input type="text" class="form-control" id="name" required>
+							<div class="help-block with-errors"></div>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="streamObjectData" class="col-md-8">
-			<div id="streamObjectFormLoading" class="loadingForm"></div>
-			<div id="streamObjectFormContainer" class="hidden">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="panel panel-default">
-							<div id="formPanelContainer" class="panel-body">
-								<form data-toggle="validator" id="streamObjectInfo">
-									<h2 id="streamObjectTitle"></h2>
-									<hr>
-									<div class="form-group required" style="min-height: 300px;">
-										<label>Value:</label>
-										<textarea wrap="hard" class="form-control" id="streamObjectValue" maxlength="1000" rows="3" required></textarea>
-										<div class="help-block with-errors"></div>
-									</div>
-									<div class="pull-right">
-										<button class="btn btn-danger" type="button" id="cancel">Cancel</button>
-										<button class="btn btn-success" type="button" id="update">Update</button>
-									</div>
-								</form>
-							</div>
+						<div class="form-group">
+							<label class="control-label">isdeleted</label> <input type="text" class="form-control" id="isdeleted">
 						</div>
-					</div>
+						<div class="form-group">
+							<label class="control-label">body__c</label> <input type="text" class="form-control" id="body__c">
+						</div>
+						<button type="button" class="btn btn-primary" id="submit">Add</button>
+					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	</form>
+
+<!-- Modal edit App -->
+<div class="modal fade" id="editStreamObject" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit stream object</h4>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" id="updateStreamObjectForm">
+					<div class="form-group">
+						<input type="hidden" class="form-control" id="idStreamObject" value="" name="idStreamObject">
+					</div>
+					<div class="form-group required">
+						<label class="control-label">System Mod Stamp</label> <input type="text" class="form-control" id="streamObjectSystemModStamp" value="" name="streamObjectSystemModStamp" disabled>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Name</label> <input type="text" class="form-control" id="streamObjectName" value="" name="streamObjectName"
+							required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Created Date</label> <input type="tel" class="form-control" id="streamObjectCreatedDate" value="" name="streamObjectCreatedDate" disabled>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Is Deleted</label> <input type="tel" class="form-control" id="streamObjectIsDeleted" value="" name="streamObjectIsDeleted" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Body</label> <input type="tel" class="form-control" id="streamObjectBody" value="" name="streamObjectBody" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<input type="hidden" class="form-control" id="streamObjectExternalGuid" value="">
+					<button type="button" class="btn btn-primary" id="edit">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
+
+<!-- Modal delete App -->
+<div class="modal fade" id="deleteSO" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Delete Stream Object</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this row?</p>
+				<output type="text" name="rowIndex" id="rowIndex" value="" hidden />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="delete">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript" src="/js/streamObject.js"></script>
