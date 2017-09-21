@@ -112,19 +112,18 @@ router.post('/', function(req, res) {
 		var isdeleted = req.body.isdeleted;
 		var body__c = req.body.body__c;
 		
-		var id = uniqid();
 		var guid = uuidv4();
 		
 		console.log("systemmodstamp: "+systemmodstamp);
 		
-		var columns = '"id", "systemmodstamp", "name", "createddate", "isdeleted", "body__c", "external_guid__c"';
-		var values = '$1, to_timestamp($2, \'YYYYMMDD HH24MISS\'), $3, to_timestamp($4, \'YYYYMMDD HH24MISS\'), $5, $6, $7';
-		var data = [id,systemmodstamp, name, createddate, isdeleted, body__c, guid];
+		var columns = '"systemmodstamp", "name", "createddate", "isdeleted", "body__c", "external_guid__c"';
+		var values = 'to_timestamp($1, \'YYYYMMDD HH24MISS\'), $2, to_timestamp($3, \'YYYYMMDD HH24MISS\'), $4, $5, $6';
+		var data = [systemmodstamp, name, createddate, isdeleted, body__c, guid];
 		
-		var sql = 'INSERT INTO ' + dbSchema + '."heroku_poc__c" (' + columns + ') VALUES (' + values + ')';
+		var sql = 'INSERT INTO ' + dbSchema + '."heroku_poc__c" (' + columns + ') VALUES (' + values + ') RETURNING "id"';
 		
 		res.setHeader('Content-Type','application/json');
-		main.runQuery(sql, data, function(results) {
+		main.runQuery(sql, data, function(id) {
 			logger.info('- New stream object created -');
 			res.status(200).send({
 				id: id,
