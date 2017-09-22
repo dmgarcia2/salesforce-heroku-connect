@@ -226,7 +226,7 @@ router.post('/', function(req, res) {
 			function(result, callback) {
 				var guid = uuidv4();
 				var columns = '"name", "body__c", "heroku_master_poc__c__master_external_id__c", "detail_external_id__c"';
-				var values = '$1, $2, $3, $4;
+				var values = '$1, $2, $3, $4';
 				var data = ['Detail1-' + name, 'Detail1-' + body__c, result.master_external_id__c, guid];
 				
 				var sql = 'INSERT INTO ' + dbSchema + '."heroku_detail_poc__c" (' + columns + ') VALUES (' + values + ') RETURNING "id"';
