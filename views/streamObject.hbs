@@ -12,7 +12,6 @@
 					<th>System Mod Stamp</th>
 					<th>Name</th>
 					<th>Created date</th>
-					<th>Is deleted</th>
 					<th>Body</th>
 					<th>External Id</th>
 					<th>Actions</th>
@@ -31,31 +30,28 @@
 </div>
 
 <!-- Modal new Stream object -->
-	<div class="modal fade" id="newStreamObject" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">New stream object</h4>
-				</div>
-				<div class="modal-body">
-					<form data-toggle="validator" id="newStreamObjectForm">
-						<div class="form-group required">
-							<label class="control-label">name</label> <input type="text" class="form-control" id="name" required>
-							<div class="help-block with-errors"></div>
-						</div>
-						<div class="form-group">
-							<label class="control-label">isdeleted</label> <input type="text" class="form-control" id="isdeleted">
-						</div>
-						<div class="form-group">
-							<label class="control-label">body__c</label> <input type="text" class="form-control" id="body__c">
-						</div>
-						<button type="button" class="btn btn-primary" id="submit">Add</button>
-					</form>
-				</div>
+<div class="modal fade" id="newStreamObject" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">New stream object</h4>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" id="newStreamObjectForm">
+					<div class="form-group required">
+						<label class="control-label">Name</label> <input type="text" class="form-control" id="name" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">body__c</label> <input type="text" class="form-control" id="body__c">
+					</div>
+					<button type="button" class="btn btn-primary" id="submit">Add</button>
+				</form>
 			</div>
 		</div>
 	</div>
+</div>
 
 <!-- Modal edit App -->
 <div class="modal fade" id="editStreamObject" role="dialog">
@@ -69,10 +65,10 @@
 				<form data-toggle="validator" id="updateStreamObjectForm">
 					<div class="form-group">
 						<input type="hidden" class="form-control" id="idStreamObject" value="" name="idStreamObject">
-					</div>
-					<div class="form-group required">
-						<label class="control-label">System Mod Stamp</label> <input type="text" class="form-control" id="streamObjectSystemModStamp" value="" name="streamObjectSystemModStamp" disabled>
-						<div class="help-block with-errors"></div>
+						<input type="hidden" class="form-control" id="streamObjectSystemModStamp" value="" name="streamObjectSystemModStamp">
+						<input type="hidden" class="form-control" id="streamObjectCreatedDate" value="" name="streamObjectCreatedDate">
+						<input type="hidden" class="form-control" id="streamObjectIsDeleted" value="" name="streamObjectIsDeleted">
+						<input type="hidden" class="form-control" id="streamObjectExternalGuid" value="">
 					</div>
 					<div class="form-group">
 						<label class="control-label">Name</label> <input type="text" class="form-control" id="streamObjectName" value="" name="streamObjectName"
@@ -80,18 +76,9 @@
 						<div class="help-block with-errors"></div>
 					</div>
 					<div class="form-group">
-						<label class="control-label">Created Date</label> <input type="tel" class="form-control" id="streamObjectCreatedDate" value="" name="streamObjectCreatedDate" disabled>
-						<div class="help-block with-errors"></div>
-					</div>
-					<div class="form-group">
-						<label class="control-label">Is Deleted</label> <input type="tel" class="form-control" id="streamObjectIsDeleted" value="" name="streamObjectIsDeleted" required>
-						<div class="help-block with-errors"></div>
-					</div>
-					<div class="form-group">
 						<label class="control-label">Body</label> <input type="tel" class="form-control" id="streamObjectBody" value="" name="streamObjectBody" required>
 						<div class="help-block with-errors"></div>
 					</div>
-					<input type="hidden" class="form-control" id="streamObjectExternalGuid" value="">
 					<button type="button" class="btn btn-primary" id="edit">Edit</button>
 				</form>
 			</div>

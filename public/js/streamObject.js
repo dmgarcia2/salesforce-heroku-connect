@@ -19,21 +19,19 @@
 			}, {
 				data : "createddate"
 			}, {
-				data : "isdeleted"
-			}, {
 				data : "body__c"
 			}, {
 				data : "external_guid__c"
 			}],
 			columnDefs : [{
-				targets : 7,
+				targets : 6,
 				render : function(data, type, full) {
 					return '<button type="button" class="btn btn-info" data-toggle="modal" data-target="#editStreamObject" id="editStreamObjectButton"><i class="fa fa-pencil" aria-hidden="true" style="color:white;"></i></button>'
 					+ ' <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteSO" id="deleteStreamObject"><i class="fa fa-lg fa-trash-o" aria-hidden="true" style="color:white;"></i></button>';
 				}
 			}, {
 				responsivePriority : 1,
-				targets : 7
+				targets : 6
 			}]
 		});
 		
@@ -46,7 +44,6 @@
 			if($('#newStreamObjectForm').validator('validate').has('.has-error').length === 0){
 				var data = {};
 				data.name = $('#name').val();
-				data.isdeleted = $('#isdeleted').val();
 				data.body__c = $('#body__c').val();
 				$.ajax({
 					type: 'POST',
