@@ -294,4 +294,162 @@ router.post('/', function(req, res) {
 	}
 });
 
+router.put('/:id', function(req, res) {
+	try {
+		var id = req.body.id;
+		var systemmodstamp = req.body.systemmodstamp;
+		var name = req.body.name;
+		var createddate = req.body.createddate;
+		var isdeleted = req.body.isdeleted;
+		var body__c = req.body.body__c;
+		var master_external_id__c = req.body.master_external_id__c;
+		
+		var sql =
+			'UPDATE ' + dbSchema + '."heroku_master_poc__c" ' +
+			'SET "systemmodstamp"=$1, "name"=$2, "createddate"=$3, "isdeleted"=$4, "body__c"=$5, "master_external_id__c"=$6 ' +
+			'WHERE "id"=($7)';
+		var data = [systemmodstamp, name, createddate, isdeleted, body__c, master_external_id__c, id];
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- Updating heroku_master_poc__c -');
+			res.status(200).send({
+				id: id,
+				systemmodstamp: systemmodstamp,
+				name: name,
+				createddate: createddate,
+				isdeleted: isdeleted,
+				body__c: body__c,
+				master_external_id__c: master_external_id__c
+			});
+		}, function(error) {
+			logger.error('- Cannot edit heroku_master_poc__c "' + id + '" -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+router.delete('/:streamObject_id', function(req, res) {
+	try {
+		var id = req.body.id;
+
+		res.setHeader('Content-Type','application/json');
+		waterfall([
+			// New master record
+			function(callback) {
+				var sql = 'DELETE FROM ' + dbSchema + '."heroku_detail_poc__c" WHERE "heroku_master_detail_poc__c"=($1)';
+				var data = [id];
+				
+				main.runQuery(sql, data, function(results) {
+					logger.info('- Deleting Detail objects -');
+					callback(null);
+				}, function(error) {
+					logger.error('- Cannot delete heroku_detail_poc__c object -');
+					callback(error);
+				});
+			},
+			// New detail record
+			function(callback) {
+				var sql = 'DELETE FROM ' + dbSchema + '."heroku_master_poc__c" WHERE "id"=($1)';
+				var data = [id];
+				
+				main.runQuery(sql, data, function(results) {
+					logger.info('- Deleting Master object -');
+					callback(null);
+				}, function(error) {
+					logger.error('- Cannot delete heroku_master_poc__c object -');
+					callback(error);
+				});
+			}
+		], function(error, result) {
+			if (error) {
+				logger.error('  - Cannot get rows in heroku_detail_poc__c table: ' + error, error);
+				return;
+			}
+
+			res.status(200).send({ ok : "ok" });
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+router.put('/detail/:id', function(req, res) {
+	try {
+		var id = req.body.id;
+		var systemmodstamp = req.body.systemmodstamp;
+		var name = req.body.name;
+		var createddate = req.body.createddate;
+		var isdeleted = req.body.isdeleted;
+		var body__c = req.body.body__c;
+		var heroku_master_poc__c__master_external_id__c = req.body.heroku_master_poc__c__master_external_id__c;
+		var detail_external_id__c = req.body.detail_external_id__c;
+		var heroku_master_detail_poc__c = req.body.heroku_master_detail_poc__c;
+		
+		var sql =
+			'UPDATE ' + dbSchema + '."heroku_detail_poc__c" ' +
+			'SET "systemmodstamp"=$1, "name"=$2, "createddate"=$3, "isdeleted"=$4, "body__c"=$5, ' +
+			'"heroku_master_poc__c__master_external_id__c"=$6, "detail_external_id__c"=$7, ' +
+			'"heroku_master_detail_poc__c"=$8 ' +
+			'WHERE "id"=($9)';
+		var data = [systemmodstamp, name, createddate, isdeleted, body__c, master_external_id__c,
+			heroku_master_poc__c__master_external_id__c, detail_external_id__c, heroku_master_detail_poc__c, id];
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- Updating heroku_master_poc__c -');
+			res.status(200).send({
+				id: id,
+				systemmodstamp: systemmodstamp,
+				name: name,
+				createddate: createddate,
+				isdeleted: isdeleted,
+				body__c: body__c,
+				heroku_master_poc__c__master_external_id__c: heroku_master_poc__c__master_external_id__c,
+				detail_external_id__c: detail_external_id__c,
+				heroku_master_detail_poc__c: heroku_master_detail_poc__c
+			});
+		}, function(error) {
+			logger.error('- Cannot edit heroku_master_poc__c "' + id + '" -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
+router.delete('/detail/:streamObject_id', function(req, res) {
+	try {
+		var id = req.body.id;
+		var sql = 'DELETE FROM ' + dbSchema + '."heroku_detail_poc__c" WHERE "id"=($1)';
+		var data = [id];
+		
+		res.setHeader('Content-Type','application/json');
+		main.runQuery(sql, data, function(results) {
+			logger.info('- Deleting Detail object -');
+			res.status(200).send({ ok : "ok" });
+		}, function(error) {
+			logger.error('- Cannot delete heroku_detail_poc__c object -');
+		});
+		
+	} catch (exception) {
+		logger.error('  - Unhandled exception catched', exception);
+		res.status(500).send({
+			error: exception
+		});
+	}
+});
+
 module.exports = router;

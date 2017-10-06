@@ -19,6 +19,7 @@
 					<th>Body</th>
 					<th>System Mod Stamp</th>
 					<th>Created date</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 		</table>
@@ -44,6 +45,7 @@
 					<th>Body</th>
 					<th>System Mod Stamp</th>
 					<th>Created date</th>
+					<th>Actions</th>
 				</tr>
 			</thead>
 		</table>
@@ -81,6 +83,112 @@
 					</div>
 					<button type="button" class="btn btn-primary" id="submit">Add</button>
 				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal edit App -->
+<div class="modal fade" id="editMasterObject" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit Master object</h4>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" id="updateMasterObjectForm">
+					<div class="form-group">
+						<input type="hidden" class="form-control" id="idMasterObject" value="" name="idMasterObject">
+						<input type="hidden" class="form-control" id="masterObjectSystemModStamp" value="" name="masterObjectSystemModStamp">
+						<input type="hidden" class="form-control" id="masterObjectCreatedDate" value="" name="masterObjectCreatedDate">
+						<input type="hidden" class="form-control" id="masterObjectIsDeleted" value="" name="masterObjectIsDeleted">
+						<input type="hidden" class="form-control" id="masterObjectMasterExternalId" value="">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Name</label> <input type="text" class="form-control" id="masterObjectName" value="" name="masterObjectName"
+							required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Body</label> <input type="tel" class="form-control" id="masterObjectBody" value="" name="masterObjectBody" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<button type="button" class="btn btn-primary" id="editMaster">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal delete App -->
+<div class="modal fade" id="deleteMasterO" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Delete Master Object</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this row?</p>
+				<output type="text" name="rowIndex" id="rowIndex" value="" hidden />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteMaster">Delete</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal edit App -->
+<div class="modal fade" id="editDetailObject" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Edit Detail object</h4>
+			</div>
+			<div class="modal-body">
+				<form data-toggle="validator" id="updateDetailObjectForm">
+					<div class="form-group">
+						<input type="hidden" class="form-control" id="idDetailObject" value="" name="idDetailObject">
+						<input type="hidden" class="form-control" id="detailObjectSystemModStamp" value="" name="detailObjectSystemModStamp">
+						<input type="hidden" class="form-control" id="detailObjectCreatedDate" value="" name="detailObjectCreatedDate">
+						<input type="hidden" class="form-control" id="detailObjectIsDeleted" value="" name="detailObjectIsDeleted">
+						<input type="hidden" class="form-control" id="detailObjectHerokuMasterDetailPoc" value="">
+						<input type="hidden" class="form-control" id="detailObjectHerokuMasterPocMasterExternalId" value="">
+						<input type="hidden" class="form-control" id="detailObjectDetailExternalId" value="">
+					</div>
+					<div class="form-group">
+						<label class="control-label">Name</label> <input type="text" class="form-control" id="detailObjectName" value="" name="detailObjectName"
+							required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Body</label> <input type="tel" class="form-control" id="detailObjectBody" value="" name="detailObjectBody" required>
+						<div class="help-block with-errors"></div>
+					</div>
+					<button type="button" class="btn btn-primary" id="editDetail">Edit</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal delete App -->
+<div class="modal fade" id="deleteDetailO" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">Delete Detail Object</h4>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete this row?</p>
+				<output type="text" name="rowIndex" id="rowIndex" value="" hidden />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="deleteDetail">Delete</button>
 			</div>
 		</div>
 	</div>
