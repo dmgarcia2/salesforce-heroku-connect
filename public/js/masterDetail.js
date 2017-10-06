@@ -134,7 +134,7 @@
 			$(".modal-body #masterObjectBody").val(body__c);
 			
 			var master_external_id__c = tableMaster.rows(rowIndex).data()[0].master_external_id__c;
-			$(".modal-body #masterObjectExternalGuid").val(master_external_id__c);
+			$(".modal-body #masterObjectMasterExternalId").val(master_external_id__c);
 
 			store.set('masterObjectData', {
 				id : id,
@@ -148,17 +148,17 @@
 		});
 
 		$("#editMasterObject").on('click', '#editMaster', function() {
-			if($('#updateMasterDetailObjectForm').validator('validate').has('.has-error').length === 0){
+			if($('#updateMasterObjectForm').validator('validate').has('.has-error').length === 0){
 				var update = true;
 				var data = {}; //Keep order as it is 
 
-				data.id = $('#editMasterObject #idMasterDetailObject').val();
-				data.systemmodstamp = $('#editMasterObject #masterDetailObjectSystemModStamp').val();
-				data.name = $('#editMasterObject #masterDetailObjectName').val();
-				data.createddate = $('#editMasterObject #masterDetailObjectCreatedDate').val();
-				data.isdeleted = $('#editMasterObject #masterDetailObjectIsDeleted').val();
-				data.body__c = $('#editMasterObject #masterDetailObjectBody').val();
-				data.master_external_id__c = $('#editMasterObject #masterDetailObjectExternalGuid').val();
+				data.id = $('#editMasterObject #idMasterObject').val();
+				data.systemmodstamp = $('#editMasterObject #masterObjectSystemModStamp').val();
+				data.name = $('#editMasterObject #masterObjectName').val();
+				data.createddate = $('#editMasterObject #masterObjectCreatedDate').val();
+				data.isdeleted = $('#editMasterObject #masterObjectIsDeleted').val();
+				data.body__c = $('#editMasterObject #masterObjectBody').val();
+				data.master_external_id__c = $('#editMasterObject #masterObjectMasterExternalId').val();
 
 				if (JSON.stringify(store.get('masterObjectData')).localeCompare(JSON.stringify(data)) == 0) {
 					update = false;
@@ -226,7 +226,7 @@
 			$(".modal-body #rowIndex").val(rowIndex);
 			
 			var id = tableDetail.rows(rowIndex).data()[0].id;
-			$(".modal-body #idDetailDetailObject").val(id);
+			$(".modal-body #idDetailObject").val(id);
 			
 			var systemmodstamp = tableDetail.rows(rowIndex).data()[0].systemmodstamp;
 			$(".modal-body #detailObjectSystemModStamp").val(systemmodstamp);

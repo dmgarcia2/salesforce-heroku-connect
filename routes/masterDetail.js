@@ -306,9 +306,9 @@ router.put('/:id', function(req, res) {
 		
 		var sql =
 			'UPDATE ' + dbSchema + '."heroku_master_poc__c" ' +
-			'SET "systemmodstamp"=$1, "name"=$2, "createddate"=$3, "isdeleted"=$4, "body__c"=$5, "master_external_id__c"=$6 ' +
-			'WHERE "id"=($7)';
-		var data = [systemmodstamp, name, createddate, isdeleted, body__c, master_external_id__c, id];
+			'SET "name"=$1, "body__c"=$2 ' +
+			'WHERE "id"=($3)';
+		var data = [name, body__c, id];
 		
 		res.setHeader('Content-Type','application/json');
 		main.runQuery(sql, data, function(results) {
@@ -397,12 +397,9 @@ router.put('/detail/:id', function(req, res) {
 		
 		var sql =
 			'UPDATE ' + dbSchema + '."heroku_detail_poc__c" ' +
-			'SET "systemmodstamp"=$1, "name"=$2, "createddate"=$3, "isdeleted"=$4, "body__c"=$5, ' +
-			'"heroku_master_poc__c__master_external_id__c"=$6, "detail_external_id__c"=$7, ' +
-			'"heroku_master_detail_poc__c"=$8 ' +
-			'WHERE "id"=($9)';
-		var data = [systemmodstamp, name, createddate, isdeleted, body__c, master_external_id__c,
-			heroku_master_poc__c__master_external_id__c, detail_external_id__c, heroku_master_detail_poc__c, id];
+			'SET "name"=$1, "body__c"=$2 ' +
+			'WHERE "id"=($3)';
+		var data = [name, body__c, id];
 		
 		res.setHeader('Content-Type','application/json');
 		main.runQuery(sql, data, function(results) {
